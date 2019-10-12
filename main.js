@@ -6,10 +6,10 @@ document.addEventListener("loaded_project",()=>{
   })
   const refresh = () =>{
     my_repo.status().then((result)=>{
-      console.log(result);
       result.modified.map((dir)=>{
         const element = document.getElementById((graviton.getCurrentDirectory()+dir+"_div").replace(/\\|(\/)/g,""));
-        if(element!=undefined){
+        if(element!=undefined && element.getAttribute("gitted")!=="true"){
+          element.setAttribute("gitted","true");
           element.children[1].style.color="var(--accentColor)";
           element.children[1].innerHTML += `<b>M</b>`
         }

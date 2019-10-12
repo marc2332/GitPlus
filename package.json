@@ -1,8 +1,8 @@
 {
   "name": "GitPlus",
   "author":"Marc Espin",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.0.2",
+  "description": "Bring Git to Graviton.",
   "main": "main.js",
   "scripts": {
     "test": "node test.js"
