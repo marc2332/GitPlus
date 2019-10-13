@@ -10,8 +10,9 @@ document.addEventListener("loaded_project",()=>{
         const element = document.getElementById((graviton.getCurrentDirectory()+dir+"_div").replace(/\\|(\/)/g,""));
         if(element!=undefined && element.getAttribute("gitted")!=="true"){
           element.setAttribute("gitted","true");
+          element.title += " · Modified"
           element.children[1].style.color="var(--accentColor)";
-          element.children[1].innerHTML += `<b>M</b>`
+          element.children[1].innerHTML += `<b> · M</b>`
         }
       })
     })
