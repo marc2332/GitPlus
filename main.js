@@ -1,3 +1,13 @@
+
+if(GravitonInfo.version !== "1.2.0") {
+  console.warn("GitPlus doesn't work on your current version, you need at least 1.2.0")
+  new Notification({
+    title:"GitPlus",
+    content:"You need Graviton v1.2.0+"}
+  )
+  return;
+}
+
 const gitParser = require("./core/index.js").gitParser;
 
 document.addEventListener("loaded_project",()=>{
@@ -6,7 +16,7 @@ document.addEventListener("loaded_project",()=>{
   })
   const refresh = () =>{
     my_repo.status().then((result)=>{
-      result.modified.map((dir)=>{
+       result.modified.map((dir)=>{
         const element = document.getElementById((graviton.getCurrentDirectory()+dir+"_div").replace(/\\|(\/)/g,""));
         if(element!=undefined && element.getAttribute("gitted")!=="true"){
           element.setAttribute("gitted","true");
