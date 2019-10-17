@@ -20,8 +20,25 @@ const refresh = (my_repo) =>{
           element.children[1].style.color="var(--accentColor)";
           element.children[1].innerHTML += `<b> · M</b>`
       }
-
     })
+    result.untracked.map((file)=>{
+     const element = document.getElementById((graviton.getCurrentDirectory()+file+"_div").replace(/\\|(\/)|\s/g,""));
+       if(element!=undefined && element.getAttribute("gitted")!=="true"){
+         element.setAttribute("gitted","true");
+         element.title += " · Untracked"
+         element.children[1].style.color="var(--accentColor)";
+         element.children[1].innerHTML += `<b> · U</b>`
+     }
+   })
+   result.renamed.map((file)=>{
+    const element = document.getElementById((graviton.getCurrentDirectory()+file+"_div").replace(/\\|(\/)|\s/g,""));
+      if(element!=undefined && element.getAttribute("gitted")!=="true"){
+        element.setAttribute("gitted","true");
+        element.title += " · Renamed"
+        element.children[1].style.color="var(--accentColor)";
+        element.children[1].innerHTML += `<b> · R</b>`
+    }
+  })
   })
 }
 
@@ -31,8 +48,10 @@ document.addEventListener("loaded_project",()=>{
   })
   refresh(my_repo)
   document.addEventListener("file_saved",()=>{
-    Explorer.load(graviton.getCurrentDirectory(),'g_directories',"true")
-    refresh(my_repo)
+    Explorer.load(graviton.getCurrentDirectory(),'g_directories',"true",()=>{
+      refresh(my_repo)
+    },{animation:false})
+
   })
   document.addEventListener("load_explorer",()=>{
     refresh(my_repo)
@@ -52,7 +71,7 @@ PitPlus.setList({
           const my_dialog = new Dialog({
               id:'my_dialog1',
               title:'Commit message',
-              content:`<input class="section-1 input2" placeHolder="A commit..." id="commit_label"></input>`,
+              content:`<input  class="section-1 input2" placeHolder="A commit..." id="commit_label"></input>`,
               buttons: {
                   'Continue':{
                     click:()=>{
@@ -68,6 +87,7 @@ PitPlus.setList({
                   }
               }
           })
+          document.getElementById("commit_label").focus();
         }
       }
   }
