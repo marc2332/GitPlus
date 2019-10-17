@@ -2,13 +2,13 @@
 module.exports = {
   gitParser : class  {
     constructor({path}){
+      const { exec } = require("child_process");
       this.path = path;
       const me = this;
       this.status= () => {
         let promise_call = new Promise((resolve, reject) => {
-          const { exec } = require("child_process");
-          exec(`cd ${me.path} && git status `, (a,content,b) => {
-            const splitted_content = content.split(" ");
+          const test = exec(`git status`,{ cwd: me.path},(err,data) => {
+            const splitted_content = data.split(" ");
             const filtered = []
             splitted_content.map(( word, index)=>{
               if( word.includes("modified:")){
@@ -19,6 +19,7 @@ module.exports = {
             resolve({
               'modified':filtered
             })
+            test.kill()
           });
         });
         return promise_call;
