@@ -1,4 +1,3 @@
-
 if(GravitonInfo.version !== "1.2.0") {
   console.warn("GitPlus doesn't work on your current version, you need at least 1.2.0")
   new Notification({
