@@ -8,12 +8,25 @@ if(GravitonInfo.version !== "1.2.0") {
   return;
 }
 
-const gitParser = require("./core/index.js").gitParser;
+const gitParser = require("./core/index.js").gitParser; //Import Git Repository Parser
 
-const refresh = (my_repo) =>{
-  my_repo.status().then((result)=>{
-     result.modified.map((file)=>{
-      const element = document.getElementById((graviton.getCurrentDirectory()+file+"_div").replace(/\\|(\/)|\s/g,""));
+let OLD_PARSED = {  modified:[]};
+
+const refresh = (REPOSITORY) =>{
+  REPOSITORY.getStatus().then((NEW_PARSED)=>{
+    OLD_PARSED.modified.map((item)=>{
+      if(!NEW_PARSED.modified.includes(item)){ //No need to redisplay on items which still being modified
+        const element = document.getElementById((graviton.getCurrentDirectory()+item+"_div").replace(/\\|(\/)|\s/g,""));
+        if(element!=undefined && element.getAttribute("gitted")!=="false"){
+          element.setAttribute("gitted","false");
+          element.title = element.title.replace("· Modified"," ")
+          element.children[1].style = "";
+          element.children[1].children[0].remove();
+        }
+      }
+    })
+    NEW_PARSED.modified.map((item)=>{
+      const element = document.getElementById((graviton.getCurrentDirectory()+item+"_div").replace(/\\|(\/)|\s/g,""));
         if(element!=undefined && element.getAttribute("gitted")!=="true"){
           element.setAttribute("gitted","true");
           element.title += " · Modified"
@@ -21,8 +34,8 @@ const refresh = (my_repo) =>{
           element.children[1].innerHTML += `<b> · M</b>`
       }
     })
-    result.untracked.map((file)=>{
-     const element = document.getElementById((graviton.getCurrentDirectory()+file+"_div").replace(/\\|(\/)|\s/g,""));
+    NEW_PARSED.untracked.map((item)=>{
+     const element = document.getElementById((graviton.getCurrentDirectory()+item+"_div").replace(/\\|(\/)|\s/g,""));
        if(element!=undefined && element.getAttribute("gitted")!=="true"){
          element.setAttribute("gitted","true");
          element.title += " · Untracked"
@@ -30,8 +43,8 @@ const refresh = (my_repo) =>{
          element.children[1].innerHTML += `<b> · U</b>`
      }
    })
-   result.renamed.map((file)=>{
-    const element = document.getElementById((graviton.getCurrentDirectory()+file+"_div").replace(/\\|(\/)|\s/g,""));
+   NEW_PARSED.renamed.map((item)=>{
+    const element = document.getElementById((graviton.getCurrentDirectory()+item+"_div").replace(/\\|(\/)|\s/g,""));
       if(element!=undefined && element.getAttribute("gitted")!=="true"){
         element.setAttribute("gitted","true");
         element.title += " · Renamed"
@@ -39,22 +52,20 @@ const refresh = (my_repo) =>{
         element.children[1].innerHTML += `<b> · R</b>`
     }
   })
+  OLD_PARSED = NEW_PARSED;
   })
 }
 
 document.addEventListener("loaded_project",()=>{
-  const my_repo = new gitParser({
+  const CURRENT_REPO = new gitParser({
     path:graviton.getCurrentDirectory()
   })
-  refresh(my_repo)
+  refresh(CURRENT_REPO)
   document.addEventListener("file_saved",()=>{
-    Explorer.load(graviton.getCurrentDirectory(),'g_directories',"true",()=>{
-      refresh(my_repo)
-    },{animation:false})
-
+    refresh(CURRENT_REPO)
   })
   document.addEventListener("load_explorer",()=>{
-    refresh(my_repo)
+    refresh(CURRENT_REPO)
   })
 })
 
