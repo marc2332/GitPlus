@@ -6,6 +6,7 @@ Bring Git to Graviton. Still on development.
 
 Requisites:
 - Graviton ^v1.2.0
+- Git installed on your machine
 
 What it does?
 - Show directly on the explorer the modified files
