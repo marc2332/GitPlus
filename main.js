@@ -19,8 +19,16 @@ const refresh = (REPOSITORY) =>{
         if(element!=undefined && element.getAttribute("gitted")!=="false"){
           element.setAttribute("gitted","false");
           element.title = element.title.replace("· Modified"," ")
-          element.children[1].style = "";
-          element.children[1].children[0].remove();
+          if(element.children[0].tagName === "DIV"){
+            //Directory
+            element.children[1].style = "";
+            element.children[1].children[0].remove();
+          }else{
+            //File
+            element.children[0].children[1].style = "";
+            element.children[0].children[1].children[0].remove();
+          }
+
         }
       }
     })
@@ -29,8 +37,15 @@ const refresh = (REPOSITORY) =>{
         if(element!=undefined && element.getAttribute("gitted")!=="true"){
           element.setAttribute("gitted","true");
           element.title += " · Modified"
-          element.children[1].style.color="var(--accentColor)";
-          element.children[1].innerHTML += `<b> · M</b>`
+          if(element.children[0].tagName === "DIV"){
+            //Directory
+            element.children[0].children[1].style.color="var(--accentColor)";
+            element.children[0].children[1].innerHTML += `<b> · U</b>`
+          }else{
+            //File
+            element.children[1].style.color="var(--accentColor)";
+            element.children[1].innerHTML += `<b> · M</b>`
+          }
       }
     })
     NEW_PARSED.untracked.map((item)=>{
@@ -38,8 +53,15 @@ const refresh = (REPOSITORY) =>{
        if(element!=undefined && element.getAttribute("gitted")!=="true"){
          element.setAttribute("gitted","true");
          element.title += " · Untracked"
-         element.children[1].style.color="var(--accentColor)";
-         element.children[1].innerHTML += `<b> · U</b>`
+         if(element.children[0].tagName === "DIV"){
+           //Directory
+           element.children[0].children[1].style.color="var(--accentColor)";
+           element.children[0].children[1].innerHTML += `<b> · U</b>`
+         }else{
+           //File
+           element.children[1].style.color="var(--accentColor)";
+           element.children[1].innerHTML += `<b> · U</b>`
+         }
      }
    })
    NEW_PARSED.renamed.map((item)=>{
@@ -47,8 +69,15 @@ const refresh = (REPOSITORY) =>{
       if(element!=undefined && element.getAttribute("gitted")!=="true"){
         element.setAttribute("gitted","true");
         element.title += " · Renamed"
-        element.children[1].style.color="var(--accentColor)";
-        element.children[1].innerHTML += `<b> · R</b>`
+        if(element.children[0].tagName === "DIV"){
+          //Directory
+          element.children[0].children[1].style.color="var(--accentColor)";
+          element.children[0].children[1].innerHTML += `<b> · R</b>`
+        }else{
+          //File
+          element.children[1].style.color="var(--accentColor)";
+          element.children[1].innerHTML += `<b> · R</b>`
+        }
     }
   })
   OLD_PARSED = NEW_PARSED;
