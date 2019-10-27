@@ -5,8 +5,9 @@
   "description": "Bring Git to Graviton.",
   "logo": "logo.svg",
   "main": "main.js",
-  "scripts": {
-    "test": "node test.js"
-  },
-  "license": "MIT"
+  "scripts": {},
+  "license": "MIT",
+  "dependencies": {
+    "simple-git": "^1.126.0"
+  }
 }
