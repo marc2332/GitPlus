@@ -105,9 +105,8 @@ PitPlus.setList({
         click: () => {
           const repo = require('simple-git')(graviton.getCurrentDirectory())
           repo.branch((err,data)=>{
-            console.log(err,data)
             const my_dialog = new Dialog({
-                id:'my_dialog1',
+                id:'commit_git_plus_dialog',
                 title:'Commit message',
                 content:`
                   <h5>Branch:</h5>
@@ -138,6 +137,27 @@ PitPlus.setList({
             document.getElementById("commit_label").focus();
           })
         }
+      },
+      "About":{
+        click:()=>{
+          new Dialog({
+              id:'git_plus_dialog_about',
+              title:'About GitPlus',
+              content:`GitPlus provides a Git integration for Graviton Editor. It needs to have Git on the machine.`,
+              buttons:{
+                'Source':{
+                  click:()=>{
+                    shell.openExternal("https://github.com/marc2332/GitPlus")
+                  }
+                },
+                'Okay':{
+                  important:true,
+                  click:()=>{
+                  }
+                }
+              }
+            })
+          }
       }
   }
 })
