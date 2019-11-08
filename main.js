@@ -31,21 +31,43 @@ const refresh = (REPOSITORY) =>{
         }
       }
     })
+    let GITTED_DIRS = []
     NEW_PARSED.modified.map((item)=>{
       const element = document.getElementById((graviton.getCurrentDirectory()+item+"_div").replace(/\\|(\/)|\s/g,""));
+      if(element!=undefined && element.getAttribute("gitted")!=="true"){
+        element.setAttribute("gitted","true");
+        element.title += " · Modified"
+        if(element.children[0].tagName === "DIV"){
+          //Directory
+          element.children[0].children[1].style.color="var(--accentColor)";
+          element.children[0].children[1].innerHTML += `<b> · M</b>`
+        }else{
+          //File
+          element.children[1].style.color="var(--accentColor)";
+          element.children[1].innerHTML += `<b> · M</b>`
+        }
+      }
+      GITTED_DIRS.push(item.split("/"))
+    })
+    GITTED_DIRS.map((dirs)=>{
+      let added = []
+      dirs.map((dir)=>{
+        added.push(dir)
+        const element = document.getElementById((graviton.getCurrentDirectory()+added.join("/")+"_div").replace(/\\|(\/)|\s/g,""));
         if(element!=undefined && element.getAttribute("gitted")!=="true"){
           element.setAttribute("gitted","true");
           element.title += " · Modified"
           if(element.children[0].tagName === "DIV"){
             //Directory
             element.children[0].children[1].style.color="var(--accentColor)";
-            element.children[0].children[1].innerHTML += `<b> · U</b>`
+            element.children[0].children[1].innerHTML += `<b> • </b>`
           }else{
             //File
             element.children[1].style.color="var(--accentColor)";
-            element.children[1].innerHTML += `<b> · M</b>`
+            element.children[1].innerHTML += `<b> • </b>`
           }
-      }
+        }
+      })
     })
     NEW_PARSED.not_added.map((item)=>{
      const element = document.getElementById((graviton.getCurrentDirectory()+item+"_div").replace(/\\|(\/)|\s/g,""));
