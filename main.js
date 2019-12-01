@@ -9,99 +9,102 @@ if(GravitonInfo.version !== "1.2.0") {
 
 let OLD_PARSED = {  modified:[] };
 
-const refresh = (REPOSITORY) =>{
+const refresh = (REPOSITORY) => {
   const LOCAL_REPO = require('simple-git')(REPOSITORY);
-  LOCAL_REPO.status((err,NEW_PARSED)=>{
-    if(err) return;
-    OLD_PARSED.modified.map((item)=>{
-      if(!NEW_PARSED.modified.includes(item)){ //No need to redisplay on items which still being modified
-        const element = document.getElementById((graviton.getCurrentDirectory()+item+"_div").replace(/\\|(\/)|\s/g,""));
-        if(element!=undefined && element.getAttribute("gitted")!=="false"){
-          element.setAttribute("gitted","false");
-          element.title = element.title.replace("· Modified"," ")
-          if(element.children[0].tagName === "DIV"){
-            //Directory
-            element.children[1].style = "";
-            element.children[1].children[0].remove();
-          }else{
-            //File
-            element.children[0].children[1].style = "";
-            element.children[0].children[1].children[0].remove();
+  LOCAL_REPO.checkIsRepo((result)=>{
+    if(!result) return;
+    LOCAL_REPO.status((err,NEW_PARSED)=>{
+      if(err) return;
+      OLD_PARSED.modified.map((item)=>{
+        if(!NEW_PARSED.modified.includes(item)){ //No need to redisplay on items which still being modified
+          const element = document.getElementById((graviton.getCurrentDirectory()+item+"_div").replace(/\\|(\/)|\s/g,""));
+          if(element!=undefined && element.getAttribute("gitted")!=="false"){
+            element.setAttribute("gitted","false");
+            element.title = element.title.replace("· Modified"," ")
+            if(element.children[0].tagName === "DIV"){
+              //Directory
+              element.children[1].style = "";
+              element.children[1].children[0].remove();
+            }else{
+              //File
+              element.children[0].children[1].style = "";
+              element.children[0].children[1].children[0].remove();
+            }
           }
         }
-      }
-    })
-    let GITTED_DIRS = []
-    NEW_PARSED.modified.map((item)=>{
-      const element = document.getElementById((graviton.getCurrentDirectory()+item+"_div").replace(/\\|(\/)|\s/g,""));
-      if(element!=undefined && element.getAttribute("gitted")!=="true"){
-        element.setAttribute("gitted","true");
-        element.title += " · Modified"
-        if(element.children[0].tagName === "DIV"){
-          //Directory
-          element.children[0].children[1].style.color="var(--accentColor)";
-          element.children[0].children[1].innerHTML += `<b> · M</b>`
-        }else{
-          //File
-          element.children[1].style.color="var(--accentColor)";
-          element.children[1].innerHTML += `<b> · M</b>`
-        }
-      }
-      GITTED_DIRS.push(item.split("/"))
-    })
-    GITTED_DIRS.map((dirs)=>{
-      let added = []
-      dirs.map((dir)=>{
-        added.push(dir)
-        const element = document.getElementById((graviton.getCurrentDirectory()+added.join("/")+"_div").replace(/\\|(\/)|\s/g,""));
+      })
+      let GITTED_DIRS = []
+      NEW_PARSED.modified.map((item)=>{
+        const element = document.getElementById((graviton.getCurrentDirectory()+item+"_div").replace(/\\|(\/)|\s/g,""));
         if(element!=undefined && element.getAttribute("gitted")!=="true"){
           element.setAttribute("gitted","true");
           element.title += " · Modified"
           if(element.children[0].tagName === "DIV"){
             //Directory
             element.children[0].children[1].style.color="var(--accentColor)";
-            element.children[0].children[1].innerHTML += `<b> • </b>`
+            element.children[0].children[1].innerHTML += `<b> · M</b>`
           }else{
             //File
             element.children[1].style.color="var(--accentColor)";
-            element.children[1].innerHTML += `<b> • </b>`
+            element.children[1].innerHTML += `<b> · M</b>`
           }
         }
+        GITTED_DIRS.push(item.split("/"))
       })
+      GITTED_DIRS.map((dirs)=>{
+        let added = []
+        dirs.map((dir)=>{
+          added.push(dir)
+          const element = document.getElementById((graviton.getCurrentDirectory()+added.join("/")+"_div").replace(/\\|(\/)|\s/g,""));
+          if(element!=undefined && element.getAttribute("gitted")!=="true"){
+            element.setAttribute("gitted","true");
+            element.title += " · Modified"
+            if(element.children[0].tagName === "DIV"){
+              //Directory
+              element.children[0].children[1].style.color="var(--accentColor)";
+              element.children[0].children[1].innerHTML += `<b> • </b>`
+            }else{
+              //File
+              element.children[1].style.color="var(--accentColor)";
+              element.children[1].innerHTML += `<b> • </b>`
+            }
+          }
+        })
+      })
+      NEW_PARSED.not_added.map((item)=>{
+      const element = document.getElementById((graviton.getCurrentDirectory()+item+"_div").replace(/\\|(\/)|\s/g,""));
+        if(element!=undefined && element.getAttribute("gitted")!=="true"){
+          element.setAttribute("gitted","true");
+          element.title += " · Untracked"
+          if(element.children[0].tagName === "DIV"){
+            //Directory
+            element.children[0].children[1].style.color="var(--accentColor)";
+            element.children[0].children[1].innerHTML += `<b> · U</b>`
+          }else{
+            //File
+            element.children[1].style.color="var(--accentColor)";
+            element.children[1].innerHTML += `<b> · U</b>`
+          }
+      }
     })
-    NEW_PARSED.not_added.map((item)=>{
-     const element = document.getElementById((graviton.getCurrentDirectory()+item+"_div").replace(/\\|(\/)|\s/g,""));
-       if(element!=undefined && element.getAttribute("gitted")!=="true"){
-         element.setAttribute("gitted","true");
-         element.title += " · Untracked"
-         if(element.children[0].tagName === "DIV"){
-           //Directory
-           element.children[0].children[1].style.color="var(--accentColor)";
-           element.children[0].children[1].innerHTML += `<b> · U</b>`
-         }else{
-           //File
-           element.children[1].style.color="var(--accentColor)";
-           element.children[1].innerHTML += `<b> · U</b>`
-         }
-     }
-   })
-   NEW_PARSED.renamed.map((item)=>{
-    const element = document.getElementById((graviton.getCurrentDirectory()+item+"_div").replace(/\\|(\/)|\s/g,""));
-      if(element!=undefined && element.getAttribute("gitted")!=="true"){
-        element.setAttribute("gitted","true");
-        element.title += " · Renamed"
-        if(element.children[0].tagName === "DIV"){
-          //Directory
-          element.children[0].children[1].style.color="var(--accentColor)";
-          element.children[0].children[1].innerHTML += `<b> · R</b>`
-        }else{
-          //File
-          element.children[1].style.color="var(--accentColor)";
-          element.children[1].innerHTML += `<b> · R</b>`
-        }
-    }
-  })
-  OLD_PARSED = NEW_PARSED;
+    NEW_PARSED.renamed.map((item)=>{
+      const element = document.getElementById((graviton.getCurrentDirectory()+item+"_div").replace(/\\|(\/)|\s/g,""));
+        if(element!=undefined && element.getAttribute("gitted")!=="true"){
+          element.setAttribute("gitted","true");
+          element.title += " · Renamed"
+          if(element.children[0].tagName === "DIV"){
+            //Directory
+            element.children[0].children[1].style.color="var(--accentColor)";
+            element.children[0].children[1].innerHTML += `<b> · R</b>`
+          }else{
+            //File
+            element.children[1].style.color="var(--accentColor)";
+            element.children[1].innerHTML += `<b> · R</b>`
+          }
+      }
+    })
+    OLD_PARSED = NEW_PARSED;
+    })
   })
 }
 
