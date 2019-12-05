@@ -11,7 +11,7 @@ let OLD_PARSED = {  modified:[] };
 
 const refresh = (REPOSITORY) => {
   const LOCAL_REPO = require('simple-git')(REPOSITORY);
-  LOCAL_REPO.checkIsRepo((result)=>{
+  LOCAL_REPO.checkIsRepo((err,result)=>{
     if(!result) return;
     LOCAL_REPO.status((err,NEW_PARSED)=>{
       if(err) return;
@@ -51,26 +51,6 @@ const refresh = (REPOSITORY) => {
         }
         GITTED_DIRS.push(item.split("/"))
       })
-      GITTED_DIRS.map((dirs)=>{
-        let added = []
-        dirs.map((dir)=>{
-          added.push(dir)
-          const element = document.getElementById((graviton.getCurrentDirectory()+added.join("/")+"_div").replace(/\\|(\/)|\s/g,""));
-          if(element!=undefined && element.getAttribute("gitted")!=="true"){
-            element.setAttribute("gitted","true");
-            element.title += " · Modified"
-            if(element.children[0].tagName === "DIV"){
-              //Directory
-              element.children[0].children[1].style.color="var(--accentColor)";
-              element.children[0].children[1].innerHTML += `<b> • </b>`
-            }else{
-              //File
-              element.children[1].style.color="var(--accentColor)";
-              element.children[1].innerHTML += `<b> • </b>`
-            }
-          }
-        })
-      })
       NEW_PARSED.not_added.map((item)=>{
       const element = document.getElementById((graviton.getCurrentDirectory()+item+"_div").replace(/\\|(\/)|\s/g,""));
         if(element!=undefined && element.getAttribute("gitted")!=="true"){
@@ -86,6 +66,7 @@ const refresh = (REPOSITORY) => {
             element.children[1].innerHTML += `<b> · U</b>`
           }
       }
+      GITTED_DIRS.push(item.split("/"))
     })
     NEW_PARSED.renamed.map((item)=>{
       const element = document.getElementById((graviton.getCurrentDirectory()+item+"_div").replace(/\\|(\/)|\s/g,""));
@@ -102,6 +83,27 @@ const refresh = (REPOSITORY) => {
             element.children[1].innerHTML += `<b> · R</b>`
           }
       }
+      GITTED_DIRS.push(item.split("/"))
+    })
+    GITTED_DIRS.map((dirs)=>{
+      let added = []
+      dirs.map((dir)=>{
+        added.push(dir)
+        const element = document.getElementById((graviton.getCurrentDirectory()+added.join("/")+"_div").replace(/\\|(\/)|\s/g,""));
+        if(element!=undefined && element.getAttribute("gitted")!=="true"){
+          element.setAttribute("gitted","true");
+          element.title += " · Modified"
+          if(element.children[0].tagName === "DIV"){
+            //Directory
+            element.children[0].children[1].style.color="var(--accentColor)";
+            element.children[0].children[1].innerHTML += `<b> • </b>`
+          }else{
+            //File
+            element.children[1].style.color="var(--accentColor)";
+            element.children[1].innerHTML += `<b> • </b>`
+          }
+        }
+      })
     })
     OLD_PARSED = NEW_PARSED;
     })
