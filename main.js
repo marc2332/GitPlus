@@ -27,8 +27,9 @@ const refresh = (REPOSITORY) => {
               element.children[1].children[0].remove();
             }else{
               //File
-              element.children[0].children[1].style = "";
-              element.children[0].children[1].children[0].remove();
+              console.log(element.children[1])
+              element.children[1].style = "";
+              if(element.children[1].children[0] !=undefined) element.children[1].children[0].remove();
             }
           }
         }
@@ -120,7 +121,6 @@ document.addEventListener("loaded_project",()=>{
   })
 })
 
-
 const PitPlus = new dropMenu({
 	id:"git_plus_dm"
 });
@@ -151,12 +151,13 @@ PitPlus.setList({
                         const MESSAGE = document.getElementById("commit_label").value;
                         const BRANCHES = document.getElementById("branches_list").value
                         repo.checkout(BRANCHES,()=>{
-                          repo.commit(MESSAGE,()=>{
-                            refresh(graviton.getCurrentDirectory())
-                            Explorer.load(graviton.getCurrentDirectory(),'g_directories',true)
+                          repo.add(['*'],function(){
+                            repo.commit(MESSAGE,()=>{
+                              refresh(graviton.getCurrentDirectory())
+                              Explorer.load(graviton.getCurrentDirectory(),'g_directories',true)
+                            })
                           })
                         })
-
                       }
                     }
                 }
@@ -170,7 +171,7 @@ PitPlus.setList({
           new Dialog({
               id:'git_plus_dialog_about',
               title:'About GitPlus',
-              content:`GitPlus provides a Git integration for Graviton Editor. It needs to have Git on the machine.`,
+              content:`GitPlus provides a Git integration for Graviton Editor. It needs Git installed on the machine.`,
               buttons:{
                 'Source':{
                   click:()=>{
