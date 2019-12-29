@@ -1,11 +1,10 @@
 {
   "name": "GitPlus",
-  "author": "Marc Espin",
-  "version": "0.1.0",
-  "description": "Bring Git to Graviton.",
+  "author": "Marc Espín",
+  "version": "0.1.1",
+  "description": "Git support for Graviton.",
   "logo": "logo.svg",
   "main": "main.js",
-  "scripts": {},
   "license": "MIT",
   "dependencies": {
     "simple-git": "^1.126.0"

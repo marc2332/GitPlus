@@ -1,4 +1,4 @@
-if(GravitonInfo.version !== "1.2.0") {
+if(!semver.gt(GravitonInfo.version,"1.1.0")) {
   console.warn("GitPlus doesn't work on your current version, you need at least 1.2.0")
   new Notification({
     title:"GitPlus",
