@@ -5,7 +5,7 @@
 Bring Git to Graviton. Still on development.
 
 Requisites:
-- Graviton ^v1.2.0
+- Graviton v1.2.0 (doesn't work with newest version)
 - Git installed on your machine
 
 What it does?
